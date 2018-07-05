@@ -27,7 +27,7 @@ type LogRecord struct {
 	statusCode    int
 	referer       string
 	userAgent     string
-	totalTime     time.Duration
+	duration     time.Duration
 }
 
 // Log method to be called for logging to "out"
@@ -35,7 +35,7 @@ func (l *LogRecord) Log(out io.Writer) {
 	timeFormatted := l.time.Format(DateTimeFormat)
 	requestLine := l.method + " " + l.path + " " + l.protocol
 	fmt.Fprintf(out, LogPattern, l.clientIP, timeFormatted, requestLine,
-		l.statusCode, l.contentLength, l.totalTime.Seconds(), l.referer, l.userAgent)
+		l.statusCode, l.contentLength, l.duration.Seconds(), l.referer, l.userAgent)
 }
 
 // WriteHeader method has been extended to record status code from previous handler.

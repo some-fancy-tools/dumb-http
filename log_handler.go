@@ -35,7 +35,7 @@ func (h LoggingHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		clientIP:       strings.Join(ipPort[:len(ipPort)-1], ":"),
 		referer:        "-",
 		userAgent:      "-",
-		totalTime:      time.Duration(0),
+		duration:       time.Duration(0),
 	}
 
 	// For logging Real IP Address
@@ -52,10 +52,12 @@ func (h LoggingHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if userAgent := r.Header.Get("User-Agent"); userAgent != "" {
 		logRecord.userAgent = userAgent
 	}
+
+	// For getting duration
 	startTime := time.Now()
 	h.handler.ServeHTTP(logRecord, r)
 	endTime := time.Now()
 	logRecord.time = endTime.UTC()
-	logRecord.totalTime = endTime.Sub(startTime) / 1000.0
+	logRecord.duration = endTime.Sub(startTime) / 1000.0
 	logRecord.Log(h.out)
 }
