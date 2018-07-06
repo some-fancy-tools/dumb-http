@@ -9,7 +9,7 @@ import (
 
 const (
 	// LogPattern is format for writing the logRecord
-	LogPattern = "%s - - [%s] \"%s\" %d %d %.4f \"%s\" \"%s\"\n"
+	LogPattern = "%s - - [%s] \"%s\" %d %d %s \"%s\" \"%s\"\n"
 	// DateTimeFormat is for logging Date and Time of request
 	DateTimeFormat = "02/Jan/2006 15:04:05" // Minimal
 	// DateTimeFormat = "Mon, 02 Jan 2006 15:04:05 MST" // Full
@@ -27,7 +27,7 @@ type LogRecord struct {
 	statusCode    int
 	referer       string
 	userAgent     string
-	duration     time.Duration
+	duration      time.Duration
 }
 
 // Log method to be called for logging to "out"
@@ -35,7 +35,7 @@ func (l *LogRecord) Log(out io.Writer) {
 	timeFormatted := l.time.Format(DateTimeFormat)
 	requestLine := l.method + " " + l.path + " " + l.protocol
 	fmt.Fprintf(out, LogPattern, l.clientIP, timeFormatted, requestLine,
-		l.statusCode, l.contentLength, l.duration.Seconds(), l.referer, l.userAgent)
+		l.statusCode, l.contentLength, l.duration.String(), l.referer, l.userAgent)
 }
 
 // WriteHeader method has been extended to record status code from previous handler.
