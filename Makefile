@@ -7,6 +7,7 @@ VERSION ?= latest
 os = $(word 1, $@)
 
 bootstrap:
+	@mkdir -p release
 	go get github.com/golang/dep/cmd/dep     # Dependency management tool
 	go get github.com/golang/lint/golint     # Linter
 	go get honnef.co/go/tools/cmd/megacheck  # Badass static analyzer/linter
@@ -22,7 +23,6 @@ test:
 
 
 $(PLATFORMS):
-	@mkdir -p release
 	GOOS=$(os) GOARCH=amd64 go build -o release/$(BINARY)
 	tar -czf release/$(BINARY)-$(VERSION)-$(os)-amd64.tar.gz README.md -C release/ $(BINARY)
 	rm release/$(BINARY)
