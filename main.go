@@ -11,21 +11,19 @@ import (
 var (
 	localDir = "."
 	host     = "0.0.0.0"
-	port     = "8000"
+	port     = 8000
 )
 
 func init() {
 	flag.StringVar(&localDir, "path", ".", "Path to serve from")
+	flag.StringVar(&host, "host", "0.0.0.0", "Host to listen on")
+	flag.IntVar(&port, "port", 8000, "Port to listen on")
 }
 
 func main() {
 	flag.Parse()
-	// Check for port in commandline
-	if commandPort := flag.Arg(0); commandPort != "" {
-		port = commandPort
-	}
 	// Start serving...
-	serve(host + ":" + port)
+	serve(fmt.Sprintf("%s:%d", host, port))
 }
 
 func serve(addr string) {
