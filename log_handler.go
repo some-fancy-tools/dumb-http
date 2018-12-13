@@ -1,6 +1,8 @@
 package main
 
 import (
+	"crypto/subtle"
+	"fmt"
 	"io"
 	"net/http"
 	"strings"
@@ -54,10 +56,36 @@ func (h LoggingHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// For getting duration
+	// startTime := time.Now()
+	username, password, ok := r.BasicAuth()
+	if user == "" || pass == "" {
+		SuccessfulResponse(logRecord, h.handler, h.out, r)
+		return
+	}
+	if user != "" && pass != "" && (!ok || subtle.ConstantTimeCompare([]byte(user), []byte(username)) != 1 || subtle.ConstantTimeCompare([]byte(pass), []byte(password)) != 1) {
+		UnsuccessfulResponse(logRecord, h.handler, h.out, w, r)
+		return
+	}
+	SuccessfulResponse(logRecord, h.handler, h.out, r)
+}
+
+func SuccessfulResponse(logRecord *LogRecord, h http.Handler, out io.Writer, r *http.Request) {
 	startTime := time.Now()
-	h.handler.ServeHTTP(logRecord, r)
+	h.ServeHTTP(logRecord, r)
 	endTime := time.Now()
 	logRecord.time = endTime.UTC()
 	logRecord.duration = endTime.Sub(startTime) / 1000.0
-	logRecord.Log(h.out)
+	logRecord.Log(out)
+}
+
+func UnsuccessfulResponse(logRecord *LogRecord, h http.Handler, out io.Writer, w http.ResponseWriter, r *http.Request) {
+	startTime := time.Now()
+	w.Header().Set("WWW-Authenticate", `Basic realm="`+realm+`"`)
+	logRecord.statusCode = http.StatusUnauthorized
+	w.WriteHeader(logRecord.statusCode)
+	fmt.Fprintln(w, "Unauthorized")
+	endTime := time.Now()
+	logRecord.time = endTime.UTC()
+	logRecord.duration = endTime.Sub(startTime) / 1000.0
+	logRecord.Log(out)
 }
