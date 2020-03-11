@@ -12,7 +12,6 @@ bootstrap:
 	go get github.com/golang/lint/golint     # Linter
 	go get honnef.co/go/tools/cmd/megacheck  # Badass static analyzer/linter
 	go get github.com/fzipp/gocyclo          # Cyclomatic complexity check
-	# dep ensure # Not needed as no third-party deps
 
 test:
 	go test -v -race $(PKGS)        # Normal Test
