@@ -17,3 +17,7 @@ Serving at http://0.0.0.0:8000/ from ./docs
 >Inspired by Python module http.server
 
 > Reference: https://gist.github.com/cespare/3985516
+
+## LICENSE
+
+MIT
