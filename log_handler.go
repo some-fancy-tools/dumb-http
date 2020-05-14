@@ -59,17 +59,17 @@ func (h LoggingHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// startTime := time.Now()
 	username, password, ok := r.BasicAuth()
 	if user == "" || pass == "" {
-		SuccessfulResponse(logRecord, h.handler, h.out, r)
+		successfulResponse(logRecord, h.handler, h.out, r)
 		return
 	}
 	if user != "" && pass != "" && (!ok || subtle.ConstantTimeCompare([]byte(user), []byte(username)) != 1 || subtle.ConstantTimeCompare([]byte(pass), []byte(password)) != 1) {
-		UnsuccessfulResponse(logRecord, h.handler, h.out, w, r)
+		unsuccessfulResponse(logRecord, h.handler, h.out, w, r)
 		return
 	}
-	SuccessfulResponse(logRecord, h.handler, h.out, r)
+	successfulResponse(logRecord, h.handler, h.out, r)
 }
 
-func SuccessfulResponse(logRecord *LogRecord, h http.Handler, out io.Writer, r *http.Request) {
+func successfulResponse(logRecord *LogRecord, h http.Handler, out io.Writer, r *http.Request) {
 	startTime := time.Now()
 	h.ServeHTTP(logRecord, r)
 	endTime := time.Now()
@@ -78,7 +78,7 @@ func SuccessfulResponse(logRecord *LogRecord, h http.Handler, out io.Writer, r *
 	logRecord.Log(out)
 }
 
-func UnsuccessfulResponse(logRecord *LogRecord, h http.Handler, out io.Writer, w http.ResponseWriter, r *http.Request) {
+func unsuccessfulResponse(logRecord *LogRecord, h http.Handler, out io.Writer, w http.ResponseWriter, r *http.Request) {
 	startTime := time.Now()
 	w.Header().Set("WWW-Authenticate", `Basic realm="`+realm+`"`)
 	logRecord.statusCode = http.StatusUnauthorized

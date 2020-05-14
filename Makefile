@@ -15,7 +15,7 @@ bootstrap:
 test:
 	go test -v -race $(PKGS)        # Normal Test
 	go vet ./...                    # go vet is the official Go static analyzer
-	megacheck ./...                 # "go vet on steroids" + linter
+	staticcheck ./...                 # "go vet on steroids" + linter
 	gocyclo -over 19 $(GO_FILES)    # forbid code with huge functions
 	golint -set_exit_status $(PKGS) # one last linter
 
