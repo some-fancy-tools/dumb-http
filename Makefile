@@ -8,10 +8,9 @@ os = $(word 1, $@)
 
 bootstrap:
 	@mkdir -p release
-	go get github.com/golang/dep/cmd/dep     # Dependency management tool
-	go get github.com/golang/lint/golint     # Linter
-	go get honnef.co/go/tools/cmd/megacheck  # Badass static analyzer/linter
-	go get github.com/fzipp/gocyclo          # Cyclomatic complexity check
+	go get golang.org/x/lint                  # Linter
+	go get honnef.co/go/tools/cmd/staticcheck # Badass static analyzer/linter
+	go get github.com/fzipp/gocyclo           # Cyclomatic complexity check
 
 test:
 	go test -v -race $(PKGS)        # Normal Test
