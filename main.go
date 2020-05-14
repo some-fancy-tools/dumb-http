@@ -11,6 +11,7 @@ import (
 var (
 	localDir = "."
 	host     = "0.0.0.0"
+	version  = "latest"
 	port     = 8000
 	user     string
 	pass     string
@@ -40,10 +41,9 @@ func serve(addr string) {
 		Addr:    addr,
 		Handler: NewLoggingHandler(mux, os.Stdout),
 	}
-	fmt.Printf("Serving at http://%s/ from %s\n", addr, localDir)
+	fmt.Printf("Serving with dumb-http/%s at http://%s/ from %s\n", version, addr, localDir)
 	err := server.ListenAndServe()
 	if err != nil {
 		log.Fatal(err)
 	}
-
 }
